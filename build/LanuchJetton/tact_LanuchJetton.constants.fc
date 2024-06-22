@@ -1,0 +1,2 @@
+;; Comment "lanuch fee"
+cell __gen_cell_comment_a1ff8aed5feb8f5d0fe20f6c7d3e8e1d99050dae9fd2a677ab67a0a7c2769e2f() asm "B{b5ee9c7241010101001000001c000000006c616e75636820666565af177a9c} B>boc PUSHREF";

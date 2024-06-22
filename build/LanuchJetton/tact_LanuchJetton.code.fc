@@ -1,0 +1,169 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_LanuchJetton.headers.fc";
+#include "tact_LanuchJetton.stdlib.fc";
+#include "tact_LanuchJetton.constants.fc";
+#include "tact_LanuchJetton.storage.fc";
+
+;;
+;; Contract LanuchJetton functions
+;;
+
+(slice, int, slice, int) $LanuchJetton$_contract_init(slice $owner, int $fee) impure inline_ref {
+    var (($self'owner, $self'fee, $self'testAddress, $self'hasminted)) = (null(), null(), null(), null());
+    $self'owner = $owner;
+    $self'fee = $fee;
+    $self'testAddress = __tact_create_address(0, 0);
+    $self'hasminted = false;
+    return ($self'owner, $self'fee, $self'testAddress, $self'hasminted);
+}
+
+((slice, int, slice, int), ()) $LanuchJetton$_fun_lanuchfee((slice, int, slice, int) $self, int $fee) impure inline_ref {
+    var (($self'owner, $self'fee, $self'testAddress, $self'hasminted)) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_body($self'owner, $fee, 2, __gen_cell_comment_a1ff8aed5feb8f5d0fe20f6c7d3e8e1d99050dae9fd2a677ab67a0a7c2769e2f()));
+    return (($self'owner, $self'fee, $self'testAddress, $self'hasminted), ());
+}
+
+((slice, int, slice, int), (int, slice, slice, int)) $LanuchJetton$_fun_get_lanuchjetton_data((slice, int, slice, int) $self) impure inline_ref {
+    var (($self'owner, $self'fee, $self'testAddress, $self'hasminted)) = $self;
+    return (($self'owner, $self'fee, $self'testAddress, $self'hasminted), $ContractInformation$_constructor_fee_owner_testAddress_hasminted($self'fee, $self'owner, $self'testAddress, $self'hasminted));
+}
+
+;;
+;; Receivers of a Contract LanuchJetton
+;;
+
+(((slice, int, slice, int)), ()) $LanuchJetton$_internal_binary_CreateNewJetton((slice, int, slice, int) $self, (slice, cell, int, int) $msg) impure inline {
+    var ($self'owner, $self'fee, $self'testAddress, $self'hasminted) = $self;
+    var ($msg'owner, $msg'content, $msg'max_supply, $msg'rate) = $msg;
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    throw_unless(63257, ($ctx'value > 100000000));
+    int $fee = $self'fee;
+    ($self'owner, $self'fee, $self'testAddress, $self'hasminted)~$LanuchJetton$_fun_lanuchfee($fee);
+    int $remainValue = ($ctx'value - $fee);
+    var ($newJetton'code, $newJetton'data) = $SampleJetton$_init_child(__tact_context_sys, $ctx'sender, $msg'content, $msg'max_supply, $msg'rate);
+    slice $newJetton_address = $global_contractAddress(($newJetton'code, $newJetton'data));
+    $self'testAddress = $global_contractAddress(($newJetton'code, $newJetton'data));
+    $self'hasminted = true;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($newJetton_address, 1000000000, 0, false, null(), $newJetton'code, $newJetton'data));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($newJetton_address, 100000000, 1, true, $Mint$_store_cell($Mint$_constructor_amount_receiver(100000, $ctx'sender))));
+    return (($self'owner, $self'fee, $self'testAddress, $self'hasminted), ());
+}
+
+(((slice, int, slice, int)), ()) $LanuchJetton$_receive_binary_bounce_CreateNewJetton((slice, int, slice, int) $self, tuple $msg) impure inline {
+    var ($self'owner, $self'fee, $self'testAddress, $self'hasminted) = $self;
+    var $msg = $msg;
+    $self'hasminted = false;
+    return (($self'owner, $self'fee, $self'testAddress, $self'hasminted), ());
+}
+
+(((slice, int, slice, int)), ()) $LanuchJetton$_internal_binary_Deploy((slice, int, slice, int) $self, (int) $deploy) impure inline {
+    var ($self'owner, $self'fee, $self'testAddress, $self'hasminted) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'owner, $self'fee, $self'testAddress, $self'hasminted)~$LanuchJetton$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'owner, $self'fee, $self'testAddress, $self'hasminted), ());
+}
+
+;;
+;; Get methods of a Contract LanuchJetton
+;;
+
+_ %get_lanuchjetton_data() method_id(129101) {
+    var self = $LanuchJetton$_contract_load();
+    var res = self~$LanuchJetton$_fun_get_lanuchjetton_data();
+    return $ContractInformation$_to_external(res);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmPhjDoJjB7y5gmJENNQgc6Yopzmsozh5jN98X161JBcPq";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract LanuchJetton
+;;
+
+((slice, int, slice, int), int) $LanuchJetton$_contract_router_internal((slice, int, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+        
+        ;; Parse op
+        int op = 0;
+        if (slice_bits(in_msg) >= 32) {
+            op = in_msg.preload_uint(32);
+        }
+        
+        ;; Bounced handler for CreateNewJetton message
+        if (op == 183966057) {
+            var msg = in_msg~$CreateNewJetton$_load_bounced();
+            self~$LanuchJetton$_receive_binary_bounce_CreateNewJetton(msg);
+            return (self, true);
+        }
+        
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive CreateNewJetton message
+    if (op == 183966057) {
+        var msg = in_msg~$CreateNewJetton$_load();
+        self~$LanuchJetton$_internal_binary_CreateNewJetton(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$LanuchJetton$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $LanuchJetton$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$LanuchJetton$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $LanuchJetton$_contract_store(self);
+}

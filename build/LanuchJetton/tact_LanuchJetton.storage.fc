@@ -1,0 +1,204 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_body(slice to, int value, int mode, cell body) inline {
+    return (true, to, value, mode, body, null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body_code_data(slice to, int value, int mode, int bounce, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Type: ContractInformation
+;; TLB: _ fee:int257 owner:address testAddress:address hasminted:bool = ContractInformation
+;;
+
+(int, slice, slice, int) $ContractInformation$_to_external(((int, slice, slice, int)) v) inline {
+    var (v'fee, v'owner, v'testAddress, v'hasminted) = v; 
+    return (v'fee, v'owner, v'testAddress, v'hasminted);
+}
+
+((int, slice, slice, int)) $ContractInformation$_constructor_fee_owner_testAddress_hasminted(int fee, slice owner, slice testAddress, int hasminted) inline {
+    return (fee, owner, testAddress, hasminted);
+}
+
+;;
+;; Type: Mint
+;; Header: 0xfc708bd2
+;; TLB: mint#fc708bd2 amount:int257 receiver:address = Mint
+;;
+
+builder $Mint$_store(builder build_0, (int, slice) v) inline {
+    var (v'amount, v'receiver) = v;
+    build_0 = store_uint(build_0, 4235234258, 32);
+    build_0 = build_0.store_int(v'amount, 257);
+    build_0 = __tact_store_address(build_0, v'receiver);
+    return build_0;
+}
+
+cell $Mint$_store_cell((int, slice) v) inline {
+    return $Mint$_store(begin_cell(), v).end_cell();
+}
+
+((int, slice)) $Mint$_constructor_amount_receiver(int amount, slice receiver) inline {
+    return (amount, receiver);
+}
+
+;;
+;; Type: CreateNewJetton
+;; Header: 0x0af71969
+;; TLB: create_new_jetton#0af71969 owner:address content:^cell max_supply:int257 rate:int257 = CreateNewJetton
+;;
+
+(slice, ((slice, cell, int, int))) $CreateNewJetton$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 183966057);
+    var v'owner = sc_0~__tact_load_address();
+    var v'content = sc_0~load_ref();
+    var v'max_supply = sc_0~load_int(257);
+    var v'rate = sc_0~load_int(257);
+    return (sc_0, (v'owner, v'content, v'max_supply, v'rate));
+}
+
+(slice, (tuple)) $CreateNewJetton$_load_bounced(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 183966057);
+    return (sc_0, null());
+}
+
+;;
+;; Type: LanuchJetton
+;;
+
+builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline {
+    var (v'owner, v'fee, v'testAddress, v'hasminted) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = build_0.store_int(v'fee, 257);
+    build_0 = __tact_store_address(build_0, v'testAddress);
+    build_0 = build_0.store_int(v'hasminted, 1);
+    return build_0;
+}
+
+(slice, ((slice, int, slice, int))) $LanuchJetton$_load(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'fee = sc_0~load_int(257);
+    var v'testAddress = sc_0~__tact_load_address();
+    var v'hasminted = sc_0~load_int(1);
+    return (sc_0, (v'owner, v'fee, v'testAddress, v'hasminted));
+}
+
+(slice, ((slice, int))) $LanuchJetton$init$_load(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'fee = sc_0~load_int(257);
+    return (sc_0, (v'owner, v'fee));
+}
+
+(slice, int, slice, int) $LanuchJetton$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$LanuchJetton$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner, int fee) = $sc~$LanuchJetton$init$_load();
+        $sc.end_parse();
+        return $LanuchJetton$_contract_init(owner, fee);
+    }
+}
+
+() $LanuchJetton$_contract_store((slice, int, slice, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $LanuchJetton$_store(b, v);
+    set_data(b.end_cell());
+}
+
+;;
+;; Type: SampleJetton
+;;
+
+builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int) v) inline {
+    var (v'owner, v'content, v'max_supply, v'rate) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = build_0.store_ref(v'content);
+    build_0 = build_0.store_int(v'max_supply, 257);
+    build_0 = build_0.store_int(v'rate, 257);
+    return build_0;
+}
+
+(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content, int $max_supply, int $rate) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: SampleJetton
+    cell mine = __tact_dict_get_code(source, 11141);
+    contracts = __tact_dict_set_code(contracts, 11141, mine);
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell code_55471 = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, code_55471);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $SampleJetton$init$_store(b, ($owner, $content, $max_supply, $rate));
+    return (mine, b.end_cell());
+}
