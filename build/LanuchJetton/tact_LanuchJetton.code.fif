@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_store_address_opt
   DECLPROC __tact_create_address
   DECLPROC __tact_compute_contract_address
   DECLPROC __tact_my_balance
@@ -14,14 +15,21 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $StonfiProvideLiquidity$_store
+  DECLPROC $StonfiProvideLiquidity$_store_cell
+  DECLPROC $TokenTransfer$_store
+  DECLPROC $TokenTransfer$_store_cell
+  DECLPROC $CreateNewPoolConfig$_load
   DECLPROC $Mint$_store
   DECLPROC $Mint$_store_cell
+  DECLPROC $CreateNewJettonMint$_store
+  DECLPROC $CreateNewJettonMint$_store_cell
   DECLPROC $CreateNewJetton$_load
-  DECLPROC $CreateNewJetton$_load_bounced
   DECLPROC $LanuchJetton$_store
   DECLPROC $LanuchJetton$_load
   DECLPROC $StateInit$_not_null
   DECLPROC $ContractInformation$_to_external
+  DECLPROC $JettonDefaultWallet$init$_store
   DECLPROC $LanuchJetton$init$_load
   DECLPROC $SampleJetton$init$_store
   DECLPROC $LanuchJetton$_contract_init
@@ -29,7 +37,15 @@ PROGRAM{
   DECLPROC $LanuchJetton$_contract_store
   DECLPROC $global_contractAddress
   DECLPROC $global_send
+  DECLPROC $Cell$_fun_asSlice
+  DECLPROC $JettonDefaultWallet$_init_child
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+  DECLPROC $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out
+  DECLPROC $SendParameters$_constructor_to_bounce_value_mode_body_code_data
+  DECLPROC $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload
+  DECLPROC $LanuchJetton$_fun_sendMemeToPair
+  DECLPROC $SendParameters$_constructor_to_bounce_value_mode_body
+  DECLPROC $LanuchJetton$_fun_sendTonToPair
   DECLPROC $SendParameters$_constructor_to_value_mode_body
   DECLPROC $LanuchJetton$_fun_lanuchfee
   DECLPROC $ContractInformation$_constructor_fee_owner_testAddress_hasminted
@@ -38,11 +54,11 @@ PROGRAM{
   DECLPROC $LanuchJetton$_fun_notify
   DECLPROC $SampleJetton$_init_child
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body_code_data
+  DECLPROC $CreateNewJettonMint$_constructor_amount_receiver
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $Mint$_constructor_amount_receiver
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $LanuchJetton$_internal_binary_CreateNewJetton
-  DECLPROC $LanuchJetton$_receive_binary_bounce_CreateNewJetton
   DECLPROC $LanuchJetton$_internal_binary_Deploy
   129101 DECLMETHOD %get_lanuchjetton_data
   113617 DECLMETHOD supported_interfaces
@@ -78,6 +94,18 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     __tact_verify_address INLINECALLDICT
     STSLICER
+  }>
+  __tact_store_address_opt PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      0 PUSHINT
+      SWAP
+      2 STU
+    }>ELSE<{
+      __tact_store_address INLINECALLDICT
+    }>
   }>
   __tact_create_address PROCINLINE:<{
     NEWC
@@ -165,6 +193,73 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
+  $StonfiProvideLiquidity$_store PROCINLINE:<{
+    4244235663 PUSHINT
+    s0 s3 XCHG2
+    32 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    STGRAMS
+  }>
+  $StonfiProvideLiquidity$_store_cell PROCINLINE:<{
+    NEWC
+    -ROT
+    $StonfiProvideLiquidity$_store INLINECALLDICT
+    ENDC
+  }>
+  $TokenTransfer$_store PROCREF:<{
+    260734629 PUSHINT
+    s0 s8 XCHG2
+    32 STU
+    s1 s6 XCHG
+    64 STU
+    s0 s4 XCHG2
+    STGRAMS
+    ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
+    }>
+    SWAP
+    STGRAMS
+    SWAP
+    STSLICER
+  }>
+  $TokenTransfer$_store_cell PROCINLINE:<{
+    NEWC
+    7 -ROLL
+    $TokenTransfer$_store INLINECALLDICT
+    ENDC
+  }>
+  $CreateNewPoolConfig$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDGRAMS
+    LDGRAMS
+    LDREF
+    SWAP
+    CTOS
+    __tact_load_address INLINECALLDICT
+    NIP
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
   $Mint$_store PROCINLINE:<{
     4235234258 PUSHINT
     s0 s3 XCHG2
@@ -180,10 +275,25 @@ PROGRAM{
     $Mint$_store INLINECALLDICT
     ENDC
   }>
-  $CreateNewJetton$_load PROCINLINE:<{
+  $CreateNewJettonMint$_store PROCINLINE:<{
+    1037115371 PUSHINT
+    s0 s3 XCHG2
+    32 STU
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $CreateNewJettonMint$_store_cell PROCINLINE:<{
+    NEWC
+    -ROT
+    $CreateNewJettonMint$_store INLINECALLDICT
+    ENDC
+  }>
+  $CreateNewJetton$_load PROCREF:<{
     32 LDU
     SWAP
-    183966057 PUSHINT
+    1019513059 PUSHINT
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
@@ -193,24 +303,41 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    4 -ROLL
-  }>
-  $CreateNewJetton$_load_bounced PROCINLINE:<{
-    32 LDU
+    LDREF
     SWAP
-    183966057 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    PUSHNULL
+    CTOS
+    257 PUSHINT
+    LDIX
+    1 LDI
+    LDREF
+    DROP
+    CTOS
+    $CreateNewPoolConfig$_load INLINECALLDICT
+    s5 POP
+    s7 s11 XCHG
+    s7 s10 XCHG
+    s7 s9 XCHG
+    s7 s8 XCHG
+    4 ROLL
   }>
   $LanuchJetton$_store PROCINLINE:<{
-    s4 s3 XCHG2
+    s7 s6 XCHG2
     __tact_store_address INLINECALLDICT
+    s1 s4 XCHG
     257 PUSHINT
     STIX
     ROT
     __tact_store_address INLINECALLDICT
     1 STI
+    1 STI
+    NEWC
+    s0 s3 XCHG2
+    __tact_store_address INLINECALLDICT
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
   }>
   $LanuchJetton$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -220,7 +347,20 @@ PROGRAM{
     __tact_load_address INLINECALLDICT
     SWAP
     1 LDI
-    4 -ROLL
+    1 LDI
+    LDREF
+    SWAP
+    CTOS
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    DROP
+    s2 s7 XCHG
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   $StateInit$_not_null PROCINLINE:<{
     DUP
@@ -230,28 +370,45 @@ PROGRAM{
   }>
   $ContractInformation$_to_external PROCINLINE:<{
   }>
+  $JettonDefaultWallet$init$_store PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
   $LanuchJetton$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
     LDIX
-    -ROT
+    1 LDI
+    3 -ROLL
   }>
   $SampleJetton$init$_store PROCINLINE:<{
-    s4 s3 XCHG2
+    s5 s4 XCHG2
     __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
     STREF
+    257 PUSHINT
+    STIX
     s1 s2 XCHG
     257 PUSHINT
     STIX
-    257 PUSHINT
-    STIX
+    NEWC
+    ROT
+    __tact_store_address INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
   }>
   $LanuchJetton$_contract_init PROCREF:<{
     0 PUSHINT
     DUP
     __tact_create_address INLINECALLDICT
     FALSE
+    MYADDR
+    s1 s3 s0 XCHG3
+    0 PUSHINT
   }>
   $LanuchJetton$_contract_load PROCREF:<{
     c4 PUSH
@@ -263,7 +420,7 @@ PROGRAM{
     SWAP
     IFJMP:<{
       $LanuchJetton$_load INLINECALLDICT
-      1 4 BLKDROP2
+      1 7 BLKDROP2
     }>
     MYADDR
     11 PLDU
@@ -271,9 +428,9 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
     $LanuchJetton$init$_load INLINECALLDICT
-    s0 s2 XCHG
+    s0 s3 XCHG
     ENDS
-    SWAP
+    ROT
     $LanuchJetton$_contract_init INLINECALLDICT
   }>
   $LanuchJetton$_contract_store PROCINLINE:<{
@@ -284,7 +441,7 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    4 -ROLL
+    7 -ROLL
     $LanuchJetton$_store INLINECALLDICT
     ENDC
     c4 POP
@@ -396,7 +553,124 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  $Cell$_fun_asSlice PROCINLINE:<{
+    CTOS
+  }>
+  $JettonDefaultWallet$_init_child PROCREF:<{
+    s0 s2 XCHG
+    CTOS
+    LDDICT
+    DROP
+    NEWDICT
+    SWAP
+    55471 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    SWAP
+    55471 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
+    NEWC
+    SWAP
+    NEWC
+    STDICT
+    ENDC
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s0 s3 XCHG3
+    $JettonDefaultWallet$init$_store INLINECALLDICT
+    ENDC
+  }>
   $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
+  }>
+  $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out PROCINLINE:<{
+  }>
+  $SendParameters$_constructor_to_bounce_value_mode_body_code_data PROCINLINE:<{
+    s5 s6 XCHG
+  }>
+  $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload PROCINLINE:<{
+  }>
+  $LanuchJetton$_fun_sendMemeToPair PROCREF:<{
+    3 3 BLKDROP2
+    __tact_context_sys GETGLOB
+    MYADDR
+    MYADDR
+    $JettonDefaultWallet$_init_child INLINECALLDICT
+    2DUP
+    $global_contractAddress INLINECALLDICT
+    s5 s3 XCHG2
+    $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out INLINECALLDICT
+    $StonfiProvideLiquidity$_store_cell INLINECALLDICT
+    NEWC
+    1 PUSHINT
+    SWAP
+    1 STU
+    STREF
+    ENDC
+    TRUE
+    0 PUSHINT
+    2 PUSHINT
+    OVER
+    MYADDR
+    PUSHNULL
+    240000000 PUSHINT
+    s0 s7 XCHG
+    $Cell$_fun_asSlice INLINECALLDICT
+    s3 s6 XCHG
+    s5 s10 XCHG
+    s4 s12 XCHG
+    s1 s3 s0 XCHG3
+    s1 s7 XCHG
+    $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload INLINECALLDICT
+    $TokenTransfer$_store_cell INLINECALLDICT
+    s3 s6 XCHG
+    s0 s0 s5 XCHG3
+    $SendParameters$_constructor_to_bounce_value_mode_body_code_data INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $SendParameters$_constructor_to_bounce_value_mode_body PROCINLINE:<{
+    s3 s4 XCHG
+    PUSHNULL
+    PUSHNULL
+  }>
+  $LanuchJetton$_fun_sendTonToPair PROCREF:<{
+    3 3 BLKDROP2
+    __tact_context_sys GETGLOB
+    MYADDR
+    s5 s(-1) PUXC
+    $JettonDefaultWallet$_init_child INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
+    SWAP
+    $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out INLINECALLDICT
+    $StonfiProvideLiquidity$_store_cell INLINECALLDICT
+    NEWC
+    1 PUSHINT
+    SWAP
+    1 STU
+    STREF
+    ENDC
+    FALSE
+    0 PUSHINT
+    66 PUSHINT
+    OVER
+    PUSHNULL
+    PUSHNULL
+    260000000 PUSHINT
+    s0 s7 XCHG
+    $Cell$_fun_asSlice INLINECALLDICT
+    s3 s6 XCHG
+    s5 s8 XCHG
+    s4 s10 XCHG
+    s1 s3 s0 XCHG3
+    s1 s7 XCHG
+    $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload INLINECALLDICT
+    $TokenTransfer$_store_cell INLINECALLDICT
+    s1 s3 XCHG
+    s1 s4 XCHG
+    $SendParameters$_constructor_to_bounce_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
   $SendParameters$_constructor_to_value_mode_body PROCINLINE:<{
     TRUE
@@ -407,7 +681,7 @@ PROGRAM{
   $LanuchJetton$_fun_lanuchfee PROCREF:<{
     2 PUSHINT
     B{b5ee9c7241010101001000001c000000006c616e75636820666565af177a9c} B>boc PUSHREF
-    s6 PUSH
+    s9 PUSH
     3 -ROLL
     $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
@@ -415,8 +689,8 @@ PROGRAM{
   $ContractInformation$_constructor_fee_owner_testAddress_hasminted PROCINLINE:<{
   }>
   $LanuchJetton$_fun_get_lanuchjetton_data PROCREF:<{
-    s2 s3 s1 PUSH3
-    s3 PUSH
+    s5 s6 s4 PUSH3
+    s6 PUSH
     $ContractInformation$_constructor_fee_owner_testAddress_hasminted INLINECALLDICT
   }>
   $LanuchJetton$_fun_forward PROCREF:<{
@@ -449,7 +723,7 @@ PROGRAM{
     $LanuchJetton$_fun_forward INLINECALLDICT
   }>
   $SampleJetton$_init_child PROCREF:<{
-    s0 s4 XCHG
+    s0 s5 XCHG
     CTOS
     LDDICT
     DROP
@@ -478,8 +752,8 @@ PROGRAM{
     FALSE
     SWAP
     1 STI
-    4 -ROLL
-    s0 s5 XCHG
+    5 -ROLL
+    s0 s6 XCHG
     $SampleJetton$init$_store INLINECALLDICT
     ENDC
   }>
@@ -487,6 +761,8 @@ PROGRAM{
     s3 s6 XCHG
     s3 s5 XCHG
     s3 s4 XCHG
+  }>
+  $CreateNewJettonMint$_constructor_amount_receiver PROCINLINE:<{
   }>
   $SendParameters$_constructor_to_value_mode_bounce_body PROCINLINE:<{
     s1 s4 XCHG
@@ -499,60 +775,153 @@ PROGRAM{
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   $LanuchJetton$_internal_binary_CreateNewJetton PROCINLINE:<{
-    s3 POP
+    29786 PUSHINT
+    s8 PUSH
+    100 PUSHINT
+    MOD
+    s8 PUSH
+    100 PUSHINT
+    MOD
+    ADD
+    101 LESSINT
+    THROWANYIFNOT
     __tact_context_get INLINECALLDICT
     DROP
     s2 POP
     63257 PUSHINT
     s2 PUSH
+    200000000 PUSHINT
+    GREATER
+    THROWANYIFNOT
+    18 s() PUSH
+    s6 20 s() XCHG
+    s5 19 s() XCHG
+    s4 18 s() XCHG
+    s3 17 s() XCHG
+    s2 16 s() XCHG
+    s15 s14 s14 XC2PU
+    $LanuchJetton$_fun_lanuchfee INLINECALLDICT
+    DROP
+    s3 POP
+    s14 s12 XCHG2
+    SUB
+    63257 PUSHINT
+    OVER
     100000000 PUSHINT
     GREATER
-    1 3 BLKDROP2
     THROWANYIFNOT
-    s6 PUSH
-    s3 s8 XCHG
-    s7 s6 s5 XCHG3
-    s5 PUSH
-    $LanuchJetton$_fun_lanuchfee INLINECALLDICT
-    2DROP
-    s3 POP
     __tact_context_sys GETGLOB
-    s3 s4 XCPU
-    s7 s6 s3 XCHG3
+    MYADDR
+    s12 s3 s0 XCHG3
+    s11 s10 s(-1) XCPUXC
+    s10 s(-1) PUXC
     $SampleJetton$_init_child INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
     s2 s1 PUSH2
     $global_contractAddress INLINECALLDICT
-    TRUE
-    1000000000 PUSHINT
-    0 PUSHINT
-    FALSE
-    PUSHNULL
-    s6 PUSH
-    s0 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s8 XCHG3
-    s1 s9 XCHG
-    $SendParameters$_constructor_to_value_mode_bounce_body_code_data INLINECALLDICT
-    $global_send INLINECALLDICT
-    100000000 PUSHINT
-    1 PUSHINT
-    TRUE
-    100000 PUSHINT
-    s0 s7 XCHG2
-    $Mint$_constructor_amount_receiver INLINECALLDICT
-    $Mint$_store_cell INLINECALLDICT
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
+    s9 PUSH
+    100 PUSHINT
+    MOD
+    0 EQINT
+    IF:<{
+    }>ELSE<{
+    }>
+    s9 PUSH
+    100 PUSHINT
+    MOD
+    0 NEQINT
+    IF:<{
+      100000000 PUSHINT
+      0 PUSHINT
+      FALSE
+      s12 PUSH
+      100 PUSHINT
+      MOD
+      0 EQINT
+      IF:<{
+        s12 POP
+        DUP
+      }>ELSE<{
+        s0 s12 XCHG
+        100 PUSHINT
+        MOD
+        s13 s(-1) PUXC
+        MUL
+      }>
+      SWAP
+      s0 17 s() XCHG
+      $CreateNewJettonMint$_constructor_amount_receiver INLINECALLDICT
+      $CreateNewJettonMint$_store_cell INLINECALLDICT
+      s3 PUSH
+      s5 s1 s6 XCHG3
+      s4 17 s() XCHG
+      s3 s12 XCHG
+      ROT
+      $SendParameters$_constructor_to_value_mode_bounce_body_code_data INLINECALLDICT
+      $global_send INLINECALLDICT
+    }>ELSE<{
+      s9 POP
+      s13 POP
+      2DROP
+    }>
+    s0 s4 XCHG
+    100 PUSHINT
+    MOD
     s1 s6 XCHG
-    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
-  $LanuchJetton$_receive_binary_bounce_CreateNewJetton PROCINLINE:<{
-    2DROP
-    FALSE
+    MUL
+    100 PUSHINT
+    DIV
+    s0 s2 XCHG
+    IF:<{
+      0 PUSHINT
+      DUP
+      FALSE
+      MYADDR
+      s5 s(-1) PUXC
+      $Mint$_constructor_amount_receiver INLINECALLDICT
+      $Mint$_store_cell INLINECALLDICT
+      s4 s12 XCHG
+      $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+      $global_send INLINECALLDICT
+      s3 s6 XCHG
+      5 1 REVERSE
+      s1 s8 XCHG
+      s3 s3 s0 XCHG3
+      1 PUSHINT
+      s9 PUSH
+      s9 s2 s(-1) PUXC2
+      s15 PUSH
+      s15 s2 s(-1) PUXC2
+      s15 PUSH
+      s15 s2 s(-1) PUXC2
+      s1 s15 XCHG
+      $LanuchJetton$_fun_sendTonToPair INLINECALLDICT
+      s6 s12 XCHG
+      s5 s11 XCHG
+      s4 s10 XCHG
+      s3 s9 XCHG
+      s8 s1 s6 XCHG3
+      s4 s7 s4 XCHG3
+      s1 s5 XCHG
+      s1 s3 XCHG
+      1 PUSHINT
+      $LanuchJetton$_fun_sendMemeToPair INLINECALLDICT
+      s0 s6 XCHG
+      s0 s4 XCHG
+      s3 s5 s3 XCHG3
+    }>ELSE<{
+      2DROP
+      s4 s11 XCHG
+      s3 s10 XCHG
+      s2 s9 XCHG
+      s8 s6 XCHG2
+      5 BLKDROP
+    }>
+    s4 s6 XCHG
+    s1 s5 XCHG
+    s3 s4 XCHG
+    s0 s1 s3 XCHG3
   }>
   $LanuchJetton$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
@@ -562,7 +931,7 @@ PROGRAM{
   %get_lanuchjetton_data PROC:<{
     $LanuchJetton$_contract_load INLINECALLDICT
     $LanuchJetton$_fun_get_lanuchjetton_data INLINECALLDICT
-    4 4 BLKDROP2
+    7 4 BLKDROP2
     $ContractInformation$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
@@ -573,7 +942,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d50686a446f4a6a42377935676d4a454e4e51676336596f707a6d736f7a68356a4e3938583136314a42635071} PUSHSLICE
+    x{697066733a2f2f516d576f4d68565246516d623134477051745a44316a6167686e55474253426333447432585843464670664c5272} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -584,25 +953,6 @@ PROGRAM{
   $LanuchJetton$_contract_router_internal PROCREF:<{
     SWAP
     IFJMP:<{
-      32 PUSHINT
-      SDSKIPFIRST
-      0 PUSHINT
-      OVER
-      SBITS
-      31 GTINT
-      IF:<{
-        DROP
-        DUP
-        32 PLDU
-      }>
-      183966057 PUSHINT
-      EQUAL
-      IFJMP:<{
-        $CreateNewJetton$_load_bounced INLINECALLDICT
-        NIP
-        $LanuchJetton$_receive_binary_bounce_CreateNewJetton INLINECALLDICT
-        TRUE
-      }>
       DROP
       TRUE
     }>
@@ -616,12 +966,12 @@ PROGRAM{
       32 PLDU
     }>
     DUP
-    183966057 PUSHINT
+    1019513059 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
       $CreateNewJetton$_load INLINECALLDICT
-      1 4 BLKDROP2
+      1 11 BLKDROP2
       $LanuchJetton$_internal_binary_CreateNewJetton INLINECALLDICT
       TRUE
     }>
@@ -655,7 +1005,7 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $LanuchJetton$_contract_load INLINECALLDICT
-    2 4 BLKSWAP
+    2 7 BLKSWAP
     $LanuchJetton$_contract_router_internal INLINECALLDICT
     130 THROWIFNOT
     $LanuchJetton$_contract_store INLINECALLDICT

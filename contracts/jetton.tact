@@ -63,7 +63,7 @@ trait Jetton with Ownable {
     // @amount The amount of Jetton token being minted
     // @response_destination The previous owner address
     fun mint(to: Address, amount: Int, response_destination: Address) {
-        require(self.mintable, "Can't Mint Anymore");
+        // require(self.mintable, "Can't Mint Anymore");
         self.total_supply = self.total_supply + amount; // Update total supply
 
         let winit: StateInit = self.getJettonWalletInit(to); // Create message

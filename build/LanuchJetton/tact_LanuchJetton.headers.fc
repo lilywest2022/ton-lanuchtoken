@@ -12,6 +12,9 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
+;; __tact_store_address_opt
+builder __tact_store_address_opt(builder b, slice address) inline;
+
 ;; __tact_create_address
 slice __tact_create_address(int chain, int hash) inline;
 
@@ -48,23 +51,41 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v) inline;
 
+;; $StonfiProvideLiquidity$_store
+builder $StonfiProvideLiquidity$_store(builder build_0, (slice, int) v) inline;
+
+;; $StonfiProvideLiquidity$_store_cell
+cell $StonfiProvideLiquidity$_store_cell((slice, int) v) inline;
+
+;; $TokenTransfer$_store
+builder $TokenTransfer$_store(builder build_0, (int, int, slice, slice, cell, int, slice) v) inline_ref;
+
+;; $TokenTransfer$_store_cell
+cell $TokenTransfer$_store_cell((int, int, slice, slice, cell, int, slice) v) inline;
+
+;; $CreateNewPoolConfig$_load
+(slice, ((slice, slice, int, int, slice))) $CreateNewPoolConfig$_load(slice sc_0) inline;
+
 ;; $Mint$_store
 builder $Mint$_store(builder build_0, (int, slice) v) inline;
 
 ;; $Mint$_store_cell
 cell $Mint$_store_cell((int, slice) v) inline;
 
-;; $CreateNewJetton$_load
-(slice, ((slice, cell, int, int))) $CreateNewJetton$_load(slice sc_0) inline;
+;; $CreateNewJettonMint$_store
+builder $CreateNewJettonMint$_store(builder build_0, (int, slice) v) inline;
 
-;; $CreateNewJetton$_load_bounced
-(slice, (tuple)) $CreateNewJetton$_load_bounced(slice sc_0) inline;
+;; $CreateNewJettonMint$_store_cell
+cell $CreateNewJettonMint$_store_cell((int, slice) v) inline;
+
+;; $CreateNewJetton$_load
+(slice, ((slice, cell, int, int, int, int, (slice, slice, int, int, slice)))) $CreateNewJetton$_load(slice sc_0) inline_ref;
 
 ;; $LanuchJetton$_store
-builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline;
+builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int, int, slice, int) v) inline;
 
 ;; $LanuchJetton$_load
-(slice, ((slice, int, slice, int))) $LanuchJetton$_load(slice sc_0) inline;
+(slice, ((slice, int, slice, int, int, slice, int))) $LanuchJetton$_load(slice sc_0) inline;
 
 ;; $StateInit$_not_null
 ((cell, cell)) $StateInit$_not_null(tuple v) inline;
@@ -72,20 +93,23 @@ builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline
 ;; $ContractInformation$_to_external
 (int, slice, slice, int) $ContractInformation$_to_external(((int, slice, slice, int)) v) inline;
 
+;; $JettonDefaultWallet$init$_store
+builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline;
+
 ;; $LanuchJetton$init$_load
-(slice, ((slice, int))) $LanuchJetton$init$_load(slice sc_0) inline;
+(slice, ((slice, int, int))) $LanuchJetton$init$_load(slice sc_0) inline;
 
 ;; $SampleJetton$init$_store
-builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int) v) inline;
+builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int, slice) v) inline;
 
 ;; $LanuchJetton$_contract_init
-(slice, int, slice, int) $LanuchJetton$_contract_init(slice $owner, int $fee) impure inline_ref;
+(slice, int, slice, int, int, slice, int) $LanuchJetton$_contract_init(slice $owner, int $fee, int $isLanuch) impure inline_ref;
 
 ;; $LanuchJetton$_contract_load
-(slice, int, slice, int) $LanuchJetton$_contract_load() impure inline_ref;
+(slice, int, slice, int, int, slice, int) $LanuchJetton$_contract_load() impure inline_ref;
 
 ;; $LanuchJetton$_contract_store
-() $LanuchJetton$_contract_store((slice, int, slice, int) v) impure inline;
+() $LanuchJetton$_contract_store((slice, int, slice, int, int, slice, int) v) impure inline;
 
 ;; $global_contractAddress
 slice $global_contractAddress((cell, cell) $s) impure inline;
@@ -93,32 +117,59 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
+;; $Cell$_fun_asSlice
+slice $Cell$_fun_asSlice(cell $self) impure inline;
+
+;; $JettonDefaultWallet$_init_child
+(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $owner, slice $master) inline_ref;
+
 ;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
+
+;; $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out
+((slice, int)) $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out(slice token_wallet, int min_lp_out) inline;
+
+;; $SendParameters$_constructor_to_bounce_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_bounce_value_mode_body_code_data(slice to, int bounce, int value, int mode, cell body, cell code, cell data) inline;
+
+;; $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload
+((int, int, slice, slice, cell, int, slice)) $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload(int query_id, int amount, slice sender, slice response_destination, cell custom_payload, int forward_ton_amount, slice forward_payload) inline;
+
+;; $LanuchJetton$_fun_sendMemeToPair
+((slice, int, slice, int, int, slice, int), ()) $LanuchJetton$_fun_sendMemeToPair((slice, int, slice, int, int, slice, int) $self, (slice, slice, int, int, slice) $config, int $tokenAmount, int $minLPOut) impure inline_ref;
+
+;; $SendParameters$_constructor_to_bounce_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_bounce_value_mode_body(slice to, int bounce, int value, int mode, cell body) inline;
+
+;; $LanuchJetton$_fun_sendTonToPair
+((slice, int, slice, int, int, slice, int), ()) $LanuchJetton$_fun_sendTonToPair((slice, int, slice, int, int, slice, int) $self, (slice, slice, int, int, slice) $config, int $tonAmount, int $min_lp_out) impure inline_ref;
 
 ;; $SendParameters$_constructor_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_body(slice to, int value, int mode, cell body) inline;
 
 ;; $LanuchJetton$_fun_lanuchfee
-((slice, int, slice, int), ()) $LanuchJetton$_fun_lanuchfee((slice, int, slice, int) $self, int $fee) impure inline_ref;
+((slice, int, slice, int, int, slice, int), ()) $LanuchJetton$_fun_lanuchfee((slice, int, slice, int, int, slice, int) $self, int $fee) impure inline_ref;
 
 ;; $ContractInformation$_constructor_fee_owner_testAddress_hasminted
 ((int, slice, slice, int)) $ContractInformation$_constructor_fee_owner_testAddress_hasminted(int fee, slice owner, slice testAddress, int hasminted) inline;
 
 ;; $LanuchJetton$_fun_get_lanuchjetton_data
-((slice, int, slice, int), (int, slice, slice, int)) $LanuchJetton$_fun_get_lanuchjetton_data((slice, int, slice, int) $self) impure inline_ref;
+((slice, int, slice, int, int, slice, int), (int, slice, slice, int)) $LanuchJetton$_fun_get_lanuchjetton_data((slice, int, slice, int, int, slice, int) $self) impure inline_ref;
 
 ;; $LanuchJetton$_fun_forward
-((slice, int, slice, int), ()) $LanuchJetton$_fun_forward((slice, int, slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
+((slice, int, slice, int, int, slice, int), ()) $LanuchJetton$_fun_forward((slice, int, slice, int, int, slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $LanuchJetton$_fun_notify
-((slice, int, slice, int), ()) $LanuchJetton$_fun_notify((slice, int, slice, int) $self, cell $body) impure inline;
+((slice, int, slice, int, int, slice, int), ()) $LanuchJetton$_fun_notify((slice, int, slice, int, int, slice, int) $self, cell $body) impure inline;
 
 ;; $SampleJetton$_init_child
-(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content, int $max_supply, int $rate) inline_ref;
+(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content, int $max_supply, int $rate, slice $creator_contract) inline_ref;
 
 ;; $SendParameters$_constructor_to_value_mode_bounce_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body_code_data(slice to, int value, int mode, int bounce, cell body, cell code, cell data) inline;
+
+;; $CreateNewJettonMint$_constructor_amount_receiver
+((int, slice)) $CreateNewJettonMint$_constructor_amount_receiver(int amount, slice receiver) inline;
 
 ;; $SendParameters$_constructor_to_value_mode_bounce_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;

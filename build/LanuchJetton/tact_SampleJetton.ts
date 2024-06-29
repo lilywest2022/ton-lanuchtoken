@@ -321,96 +321,211 @@ function dictValueParserFactoryDeploy(): DictionaryValue<FactoryDeploy> {
     }
 }
 
-export type ChangeOwner = {
-    $$type: 'ChangeOwner';
-    queryId: bigint;
-    newOwner: Address;
+export type PoolStorage = {
+    $$type: 'PoolStorage';
+    router_address: Address;
+    lp_fee: bigint;
+    protocol_fee: bigint;
+    ref_fee: bigint;
+    token0_address: Address;
+    token1_address: Address;
+    total_supply_lp: bigint;
+    collected_token0_protocol_fee: bigint;
+    collected_token1_protocol_fee: bigint;
+    protocol_fee_address: Address;
+    reserve0: bigint;
+    reserve1: bigint;
+    jetton_lp_wallet_code: Cell;
+    lp_account_code: Cell;
 }
 
-export function storeChangeOwner(src: ChangeOwner) {
+export function storePoolStorage(src: PoolStorage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2174598809, 32);
-        b_0.storeUint(src.queryId, 64);
-        b_0.storeAddress(src.newOwner);
+        b_0.storeUint(4031786317, 32);
+        b_0.storeAddress(src.router_address);
+        b_0.storeUint(src.lp_fee, 8);
+        b_0.storeUint(src.protocol_fee, 8);
+        b_0.storeUint(src.ref_fee, 8);
+        b_0.storeAddress(src.token0_address);
+        b_0.storeAddress(src.token1_address);
+        b_0.storeCoins(src.total_supply_lp);
+        let b_1 = new Builder();
+        b_1.storeCoins(src.collected_token0_protocol_fee);
+        b_1.storeCoins(src.collected_token1_protocol_fee);
+        b_1.storeAddress(src.protocol_fee_address);
+        b_1.storeCoins(src.reserve0);
+        b_1.storeCoins(src.reserve1);
+        b_1.storeRef(src.jetton_lp_wallet_code);
+        b_1.storeRef(src.lp_account_code);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
-export function loadChangeOwner(slice: Slice) {
+export function loadPoolStorage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2174598809) { throw Error('Invalid prefix'); }
-    let _queryId = sc_0.loadUintBig(64);
-    let _newOwner = sc_0.loadAddress();
-    return { $$type: 'ChangeOwner' as const, queryId: _queryId, newOwner: _newOwner };
+    if (sc_0.loadUint(32) !== 4031786317) { throw Error('Invalid prefix'); }
+    let _router_address = sc_0.loadAddress();
+    let _lp_fee = sc_0.loadUintBig(8);
+    let _protocol_fee = sc_0.loadUintBig(8);
+    let _ref_fee = sc_0.loadUintBig(8);
+    let _token0_address = sc_0.loadAddress();
+    let _token1_address = sc_0.loadAddress();
+    let _total_supply_lp = sc_0.loadCoins();
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _collected_token0_protocol_fee = sc_1.loadCoins();
+    let _collected_token1_protocol_fee = sc_1.loadCoins();
+    let _protocol_fee_address = sc_1.loadAddress();
+    let _reserve0 = sc_1.loadCoins();
+    let _reserve1 = sc_1.loadCoins();
+    let _jetton_lp_wallet_code = sc_1.loadRef();
+    let _lp_account_code = sc_1.loadRef();
+    return { $$type: 'PoolStorage' as const, router_address: _router_address, lp_fee: _lp_fee, protocol_fee: _protocol_fee, ref_fee: _ref_fee, token0_address: _token0_address, token1_address: _token1_address, total_supply_lp: _total_supply_lp, collected_token0_protocol_fee: _collected_token0_protocol_fee, collected_token1_protocol_fee: _collected_token1_protocol_fee, protocol_fee_address: _protocol_fee_address, reserve0: _reserve0, reserve1: _reserve1, jetton_lp_wallet_code: _jetton_lp_wallet_code, lp_account_code: _lp_account_code };
 }
 
-function loadTupleChangeOwner(source: TupleReader) {
-    let _queryId = source.readBigNumber();
-    let _newOwner = source.readAddress();
-    return { $$type: 'ChangeOwner' as const, queryId: _queryId, newOwner: _newOwner };
+function loadTuplePoolStorage(source: TupleReader) {
+    let _router_address = source.readAddress();
+    let _lp_fee = source.readBigNumber();
+    let _protocol_fee = source.readBigNumber();
+    let _ref_fee = source.readBigNumber();
+    let _token0_address = source.readAddress();
+    let _token1_address = source.readAddress();
+    let _total_supply_lp = source.readBigNumber();
+    let _collected_token0_protocol_fee = source.readBigNumber();
+    let _collected_token1_protocol_fee = source.readBigNumber();
+    let _protocol_fee_address = source.readAddress();
+    let _reserve0 = source.readBigNumber();
+    let _reserve1 = source.readBigNumber();
+    let _jetton_lp_wallet_code = source.readCell();
+    let _lp_account_code = source.readCell();
+    return { $$type: 'PoolStorage' as const, router_address: _router_address, lp_fee: _lp_fee, protocol_fee: _protocol_fee, ref_fee: _ref_fee, token0_address: _token0_address, token1_address: _token1_address, total_supply_lp: _total_supply_lp, collected_token0_protocol_fee: _collected_token0_protocol_fee, collected_token1_protocol_fee: _collected_token1_protocol_fee, protocol_fee_address: _protocol_fee_address, reserve0: _reserve0, reserve1: _reserve1, jetton_lp_wallet_code: _jetton_lp_wallet_code, lp_account_code: _lp_account_code };
 }
 
-function storeTupleChangeOwner(source: ChangeOwner) {
+function storeTuplePoolStorage(source: PoolStorage) {
     let builder = new TupleBuilder();
-    builder.writeNumber(source.queryId);
-    builder.writeAddress(source.newOwner);
+    builder.writeAddress(source.router_address);
+    builder.writeNumber(source.lp_fee);
+    builder.writeNumber(source.protocol_fee);
+    builder.writeNumber(source.ref_fee);
+    builder.writeAddress(source.token0_address);
+    builder.writeAddress(source.token1_address);
+    builder.writeNumber(source.total_supply_lp);
+    builder.writeNumber(source.collected_token0_protocol_fee);
+    builder.writeNumber(source.collected_token1_protocol_fee);
+    builder.writeAddress(source.protocol_fee_address);
+    builder.writeNumber(source.reserve0);
+    builder.writeNumber(source.reserve1);
+    builder.writeCell(source.jetton_lp_wallet_code);
+    builder.writeCell(source.lp_account_code);
     return builder.build();
 }
 
-function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
+function dictValueParserPoolStorage(): DictionaryValue<PoolStorage> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeChangeOwner(src)).endCell());
+            builder.storeRef(beginCell().store(storePoolStorage(src)).endCell());
         },
         parse: (src) => {
-            return loadChangeOwner(src.loadRef().beginParse());
+            return loadPoolStorage(src.loadRef().beginParse());
         }
     }
 }
 
-export type ChangeOwnerOk = {
-    $$type: 'ChangeOwnerOk';
-    queryId: bigint;
-    newOwner: Address;
+export type StonfiProvideLiquidity = {
+    $$type: 'StonfiProvideLiquidity';
+    token_wallet: Address;
+    min_lp_out: bigint;
 }
 
-export function storeChangeOwnerOk(src: ChangeOwnerOk) {
+export function storeStonfiProvideLiquidity(src: StonfiProvideLiquidity) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(846932810, 32);
-        b_0.storeUint(src.queryId, 64);
-        b_0.storeAddress(src.newOwner);
+        b_0.storeUint(4244235663, 32);
+        b_0.storeAddress(src.token_wallet);
+        b_0.storeCoins(src.min_lp_out);
     };
 }
 
-export function loadChangeOwnerOk(slice: Slice) {
+export function loadStonfiProvideLiquidity(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 846932810) { throw Error('Invalid prefix'); }
-    let _queryId = sc_0.loadUintBig(64);
-    let _newOwner = sc_0.loadAddress();
-    return { $$type: 'ChangeOwnerOk' as const, queryId: _queryId, newOwner: _newOwner };
+    if (sc_0.loadUint(32) !== 4244235663) { throw Error('Invalid prefix'); }
+    let _token_wallet = sc_0.loadAddress();
+    let _min_lp_out = sc_0.loadCoins();
+    return { $$type: 'StonfiProvideLiquidity' as const, token_wallet: _token_wallet, min_lp_out: _min_lp_out };
 }
 
-function loadTupleChangeOwnerOk(source: TupleReader) {
-    let _queryId = source.readBigNumber();
-    let _newOwner = source.readAddress();
-    return { $$type: 'ChangeOwnerOk' as const, queryId: _queryId, newOwner: _newOwner };
+function loadTupleStonfiProvideLiquidity(source: TupleReader) {
+    let _token_wallet = source.readAddress();
+    let _min_lp_out = source.readBigNumber();
+    return { $$type: 'StonfiProvideLiquidity' as const, token_wallet: _token_wallet, min_lp_out: _min_lp_out };
 }
 
-function storeTupleChangeOwnerOk(source: ChangeOwnerOk) {
+function storeTupleStonfiProvideLiquidity(source: StonfiProvideLiquidity) {
     let builder = new TupleBuilder();
-    builder.writeNumber(source.queryId);
-    builder.writeAddress(source.newOwner);
+    builder.writeAddress(source.token_wallet);
+    builder.writeNumber(source.min_lp_out);
     return builder.build();
 }
 
-function dictValueParserChangeOwnerOk(): DictionaryValue<ChangeOwnerOk> {
+function dictValueParserStonfiProvideLiquidity(): DictionaryValue<StonfiProvideLiquidity> {
     return {
         serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeChangeOwnerOk(src)).endCell());
+            builder.storeRef(beginCell().store(storeStonfiProvideLiquidity(src)).endCell());
         },
         parse: (src) => {
-            return loadChangeOwnerOk(src.loadRef().beginParse());
+            return loadStonfiProvideLiquidity(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ProvideLiquidity = {
+    $$type: 'ProvideLiquidity';
+    jettonAmount: bigint;
+    fromAddress: Address;
+    providerLiquidityBody: StonfiProvideLiquidity;
+}
+
+export function storeProvideLiquidity(src: ProvideLiquidity) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(1935855772, 32);
+        b_0.storeCoins(src.jettonAmount);
+        b_0.storeAddress(src.fromAddress);
+        b_0.store(storeStonfiProvideLiquidity(src.providerLiquidityBody));
+    };
+}
+
+export function loadProvideLiquidity(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1935855772) { throw Error('Invalid prefix'); }
+    let _jettonAmount = sc_0.loadCoins();
+    let _fromAddress = sc_0.loadAddress();
+    let _providerLiquidityBody = loadStonfiProvideLiquidity(sc_0);
+    return { $$type: 'ProvideLiquidity' as const, jettonAmount: _jettonAmount, fromAddress: _fromAddress, providerLiquidityBody: _providerLiquidityBody };
+}
+
+function loadTupleProvideLiquidity(source: TupleReader) {
+    let _jettonAmount = source.readBigNumber();
+    let _fromAddress = source.readAddress();
+    const _providerLiquidityBody = loadTupleStonfiProvideLiquidity(source.readTuple());
+    return { $$type: 'ProvideLiquidity' as const, jettonAmount: _jettonAmount, fromAddress: _fromAddress, providerLiquidityBody: _providerLiquidityBody };
+}
+
+function storeTupleProvideLiquidity(source: ProvideLiquidity) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.jettonAmount);
+    builder.writeAddress(source.fromAddress);
+    builder.writeTuple(storeTupleStonfiProvideLiquidity(source.providerLiquidityBody));
+    return builder.build();
+}
+
+function dictValueParserProvideLiquidity(): DictionaryValue<ProvideLiquidity> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeProvideLiquidity(src)).endCell());
+        },
+        parse: (src) => {
+            return loadProvideLiquidity(src.loadRef().beginParse());
         }
     }
 }
@@ -1028,6 +1143,100 @@ function dictValueParserTakeWalletAddress(): DictionaryValue<TakeWalletAddress> 
     }
 }
 
+export type ChangeOwner = {
+    $$type: 'ChangeOwner';
+    queryId: bigint;
+    newOwner: Address;
+}
+
+export function storeChangeOwner(src: ChangeOwner) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(2174598809, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeAddress(src.newOwner);
+    };
+}
+
+export function loadChangeOwner(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2174598809) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _newOwner = sc_0.loadAddress();
+    return { $$type: 'ChangeOwner' as const, queryId: _queryId, newOwner: _newOwner };
+}
+
+function loadTupleChangeOwner(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _newOwner = source.readAddress();
+    return { $$type: 'ChangeOwner' as const, queryId: _queryId, newOwner: _newOwner };
+}
+
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeAddress(source.newOwner);
+    return builder.build();
+}
+
+function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeChangeOwner(src)).endCell());
+        },
+        parse: (src) => {
+            return loadChangeOwner(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ChangeOwnerOk = {
+    $$type: 'ChangeOwnerOk';
+    queryId: bigint;
+    newOwner: Address;
+}
+
+export function storeChangeOwnerOk(src: ChangeOwnerOk) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(846932810, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeAddress(src.newOwner);
+    };
+}
+
+export function loadChangeOwnerOk(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 846932810) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _newOwner = sc_0.loadAddress();
+    return { $$type: 'ChangeOwnerOk' as const, queryId: _queryId, newOwner: _newOwner };
+}
+
+function loadTupleChangeOwnerOk(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _newOwner = source.readAddress();
+    return { $$type: 'ChangeOwnerOk' as const, queryId: _queryId, newOwner: _newOwner };
+}
+
+function storeTupleChangeOwnerOk(source: ChangeOwnerOk) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeAddress(source.newOwner);
+    return builder.build();
+}
+
+function dictValueParserChangeOwnerOk(): DictionaryValue<ChangeOwnerOk> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeChangeOwnerOk(src)).endCell());
+        },
+        parse: (src) => {
+            return loadChangeOwnerOk(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type ContractInformation = {
     $$type: 'ContractInformation';
     fee: bigint;
@@ -1083,6 +1292,69 @@ function dictValueParserContractInformation(): DictionaryValue<ContractInformati
     }
 }
 
+export type CreateNewPoolConfig = {
+    $$type: 'CreateNewPoolConfig';
+    swapRouterAddress: Address;
+    proxyTon: Address;
+    tonValueAddMeme: bigint;
+    tonValueAddPton: bigint;
+    routerPtonWallet: Address;
+}
+
+export function storeCreateNewPoolConfig(src: CreateNewPoolConfig) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeAddress(src.swapRouterAddress);
+        b_0.storeAddress(src.proxyTon);
+        b_0.storeCoins(src.tonValueAddMeme);
+        b_0.storeCoins(src.tonValueAddPton);
+        let b_1 = new Builder();
+        b_1.storeAddress(src.routerPtonWallet);
+        b_0.storeRef(b_1.endCell());
+    };
+}
+
+export function loadCreateNewPoolConfig(slice: Slice) {
+    let sc_0 = slice;
+    let _swapRouterAddress = sc_0.loadAddress();
+    let _proxyTon = sc_0.loadAddress();
+    let _tonValueAddMeme = sc_0.loadCoins();
+    let _tonValueAddPton = sc_0.loadCoins();
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _routerPtonWallet = sc_1.loadAddress();
+    return { $$type: 'CreateNewPoolConfig' as const, swapRouterAddress: _swapRouterAddress, proxyTon: _proxyTon, tonValueAddMeme: _tonValueAddMeme, tonValueAddPton: _tonValueAddPton, routerPtonWallet: _routerPtonWallet };
+}
+
+function loadTupleCreateNewPoolConfig(source: TupleReader) {
+    let _swapRouterAddress = source.readAddress();
+    let _proxyTon = source.readAddress();
+    let _tonValueAddMeme = source.readBigNumber();
+    let _tonValueAddPton = source.readBigNumber();
+    let _routerPtonWallet = source.readAddress();
+    return { $$type: 'CreateNewPoolConfig' as const, swapRouterAddress: _swapRouterAddress, proxyTon: _proxyTon, tonValueAddMeme: _tonValueAddMeme, tonValueAddPton: _tonValueAddPton, routerPtonWallet: _routerPtonWallet };
+}
+
+function storeTupleCreateNewPoolConfig(source: CreateNewPoolConfig) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.swapRouterAddress);
+    builder.writeAddress(source.proxyTon);
+    builder.writeNumber(source.tonValueAddMeme);
+    builder.writeNumber(source.tonValueAddPton);
+    builder.writeAddress(source.routerPtonWallet);
+    return builder.build();
+}
+
+function dictValueParserCreateNewPoolConfig(): DictionaryValue<CreateNewPoolConfig> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeCreateNewPoolConfig(src)).endCell());
+        },
+        parse: (src) => {
+            return loadCreateNewPoolConfig(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type Mint = {
     $$type: 'Mint';
     amount: bigint;
@@ -1130,49 +1402,117 @@ function dictValueParserMint(): DictionaryValue<Mint> {
     }
 }
 
+export type CreateNewJettonMint = {
+    $$type: 'CreateNewJettonMint';
+    amount: bigint;
+    receiver: Address;
+}
+
+export function storeCreateNewJettonMint(src: CreateNewJettonMint) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(1037115371, 32);
+        b_0.storeInt(src.amount, 257);
+        b_0.storeAddress(src.receiver);
+    };
+}
+
+export function loadCreateNewJettonMint(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1037115371) { throw Error('Invalid prefix'); }
+    let _amount = sc_0.loadIntBig(257);
+    let _receiver = sc_0.loadAddress();
+    return { $$type: 'CreateNewJettonMint' as const, amount: _amount, receiver: _receiver };
+}
+
+function loadTupleCreateNewJettonMint(source: TupleReader) {
+    let _amount = source.readBigNumber();
+    let _receiver = source.readAddress();
+    return { $$type: 'CreateNewJettonMint' as const, amount: _amount, receiver: _receiver };
+}
+
+function storeTupleCreateNewJettonMint(source: CreateNewJettonMint) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.receiver);
+    return builder.build();
+}
+
+function dictValueParserCreateNewJettonMint(): DictionaryValue<CreateNewJettonMint> {
+    return {
+        serialize: (src, builder) => {
+            builder.storeRef(beginCell().store(storeCreateNewJettonMint(src)).endCell());
+        },
+        parse: (src) => {
+            return loadCreateNewJettonMint(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type CreateNewJetton = {
     $$type: 'CreateNewJetton';
-    owner: Address;
+    token_owner: Address;
     content: Cell;
     max_supply: bigint;
     rate: bigint;
+    lanuch_rate: bigint;
+    isLanuch: boolean;
+    config: CreateNewPoolConfig;
 }
 
 export function storeCreateNewJetton(src: CreateNewJetton) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(183966057, 32);
-        b_0.storeAddress(src.owner);
+        b_0.storeUint(1019513059, 32);
+        b_0.storeAddress(src.token_owner);
         b_0.storeRef(src.content);
         b_0.storeInt(src.max_supply, 257);
         b_0.storeInt(src.rate, 257);
+        let b_1 = new Builder();
+        b_1.storeInt(src.lanuch_rate, 257);
+        b_1.storeBit(src.isLanuch);
+        let b_2 = new Builder();
+        b_2.store(storeCreateNewPoolConfig(src.config));
+        b_1.storeRef(b_2.endCell());
+        b_0.storeRef(b_1.endCell());
     };
 }
 
 export function loadCreateNewJetton(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 183966057) { throw Error('Invalid prefix'); }
-    let _owner = sc_0.loadAddress();
+    if (sc_0.loadUint(32) !== 1019513059) { throw Error('Invalid prefix'); }
+    let _token_owner = sc_0.loadAddress();
     let _content = sc_0.loadRef();
     let _max_supply = sc_0.loadIntBig(257);
     let _rate = sc_0.loadIntBig(257);
-    return { $$type: 'CreateNewJetton' as const, owner: _owner, content: _content, max_supply: _max_supply, rate: _rate };
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _lanuch_rate = sc_1.loadIntBig(257);
+    let _isLanuch = sc_1.loadBit();
+    let sc_2 = sc_1.loadRef().beginParse();
+    let _config = loadCreateNewPoolConfig(sc_2);
+    return { $$type: 'CreateNewJetton' as const, token_owner: _token_owner, content: _content, max_supply: _max_supply, rate: _rate, lanuch_rate: _lanuch_rate, isLanuch: _isLanuch, config: _config };
 }
 
 function loadTupleCreateNewJetton(source: TupleReader) {
-    let _owner = source.readAddress();
+    let _token_owner = source.readAddress();
     let _content = source.readCell();
     let _max_supply = source.readBigNumber();
     let _rate = source.readBigNumber();
-    return { $$type: 'CreateNewJetton' as const, owner: _owner, content: _content, max_supply: _max_supply, rate: _rate };
+    let _lanuch_rate = source.readBigNumber();
+    let _isLanuch = source.readBoolean();
+    const _config = loadTupleCreateNewPoolConfig(source.readTuple());
+    return { $$type: 'CreateNewJetton' as const, token_owner: _token_owner, content: _content, max_supply: _max_supply, rate: _rate, lanuch_rate: _lanuch_rate, isLanuch: _isLanuch, config: _config };
 }
 
 function storeTupleCreateNewJetton(source: CreateNewJetton) {
     let builder = new TupleBuilder();
-    builder.writeAddress(source.owner);
+    builder.writeAddress(source.token_owner);
     builder.writeCell(source.content);
     builder.writeNumber(source.max_supply);
     builder.writeNumber(source.rate);
+    builder.writeNumber(source.lanuch_rate);
+    builder.writeBoolean(source.isLanuch);
+    builder.writeTuple(storeTupleCreateNewPoolConfig(source.config));
     return builder.build();
 }
 
@@ -1249,69 +1589,13 @@ function dictValueParserSimpData(): DictionaryValue<SimpData> {
     }
 }
 
-export type CreateNewJettonWithLanuch = {
-    $$type: 'CreateNewJettonWithLanuch';
-    owner: Address;
-    content: Cell;
-    max_supply: bigint;
-    rate: bigint;
-}
-
-export function storeCreateNewJettonWithLanuch(src: CreateNewJettonWithLanuch) {
-    return (builder: Builder) => {
-        let b_0 = builder;
-        b_0.storeUint(3522866708, 32);
-        b_0.storeAddress(src.owner);
-        b_0.storeRef(src.content);
-        b_0.storeInt(src.max_supply, 257);
-        b_0.storeInt(src.rate, 257);
-    };
-}
-
-export function loadCreateNewJettonWithLanuch(slice: Slice) {
-    let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3522866708) { throw Error('Invalid prefix'); }
-    let _owner = sc_0.loadAddress();
-    let _content = sc_0.loadRef();
-    let _max_supply = sc_0.loadIntBig(257);
-    let _rate = sc_0.loadIntBig(257);
-    return { $$type: 'CreateNewJettonWithLanuch' as const, owner: _owner, content: _content, max_supply: _max_supply, rate: _rate };
-}
-
-function loadTupleCreateNewJettonWithLanuch(source: TupleReader) {
-    let _owner = source.readAddress();
-    let _content = source.readCell();
-    let _max_supply = source.readBigNumber();
-    let _rate = source.readBigNumber();
-    return { $$type: 'CreateNewJettonWithLanuch' as const, owner: _owner, content: _content, max_supply: _max_supply, rate: _rate };
-}
-
-function storeTupleCreateNewJettonWithLanuch(source: CreateNewJettonWithLanuch) {
-    let builder = new TupleBuilder();
-    builder.writeAddress(source.owner);
-    builder.writeCell(source.content);
-    builder.writeNumber(source.max_supply);
-    builder.writeNumber(source.rate);
-    return builder.build();
-}
-
-function dictValueParserCreateNewJettonWithLanuch(): DictionaryValue<CreateNewJettonWithLanuch> {
-    return {
-        serialize: (src, builder) => {
-            builder.storeRef(beginCell().store(storeCreateNewJettonWithLanuch(src)).endCell());
-        },
-        parse: (src) => {
-            return loadCreateNewJettonWithLanuch(src.loadRef().beginParse());
-        }
-    }
-}
-
  type SampleJetton_init_args = {
     $$type: 'SampleJetton_init_args';
     owner: Address;
     content: Cell;
     max_supply: bigint;
     rate: bigint;
+    creator_contract: Address;
 }
 
 function initSampleJetton_init_args(src: SampleJetton_init_args) {
@@ -1321,16 +1605,19 @@ function initSampleJetton_init_args(src: SampleJetton_init_args) {
         b_0.storeRef(src.content);
         b_0.storeInt(src.max_supply, 257);
         b_0.storeInt(src.rate, 257);
+        let b_1 = new Builder();
+        b_1.storeAddress(src.creator_contract);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
-async function SampleJetton_init(owner: Address, content: Cell, max_supply: bigint, rate: bigint) {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+async function SampleJetton_init(owner: Address, content: Cell, max_supply: bigint, rate: bigint, creator_contract: Address) {
+    const __code = Cell.fromBase64('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');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
-    initSampleJetton_init_args({ $$type: 'SampleJetton_init_args', owner, content, max_supply, rate })(builder);
+    initSampleJetton_init_args({ $$type: 'SampleJetton_init_args', owner, content, max_supply, rate, creator_contract })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
@@ -1365,10 +1652,11 @@ const SampleJetton_errors: { [key: number]: { message: string } } = {
     12241: { message: `Max supply exceeded` },
     14534: { message: `Not owner` },
     16059: { message: `Invalid value` },
-    18668: { message: `Can't Mint Anymore` },
     23951: { message: `Insufficient gas` },
+    29786: { message: `supply rate has wrong` },
     42708: { message: `Invalid sender!` },
     43422: { message: `Invalid value - Burn` },
+    52348: { message: `The CreateNewJettonMint only call once itme` },
     62972: { message: `Invalid balance` },
     63257: { message: `your fee can't afford it` },
 }
@@ -1380,8 +1668,9 @@ const SampleJetton_types: ABIType[] = [
     {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"ChangeOwner","header":2174598809,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"PoolStorage","header":4031786317,"fields":[{"name":"router_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"lp_fee","type":{"kind":"simple","type":"uint","optional":false,"format":8}},{"name":"protocol_fee","type":{"kind":"simple","type":"uint","optional":false,"format":8}},{"name":"ref_fee","type":{"kind":"simple","type":"uint","optional":false,"format":8}},{"name":"token0_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"token1_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"total_supply_lp","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"collected_token0_protocol_fee","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"collected_token1_protocol_fee","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"protocol_fee_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"reserve0","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"reserve1","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"jetton_lp_wallet_code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"lp_account_code","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"StonfiProvideLiquidity","header":4244235663,"fields":[{"name":"token_wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"min_lp_out","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"ProvideLiquidity","header":1935855772,"fields":[{"name":"jettonAmount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"fromAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"providerLiquidityBody","type":{"kind":"simple","type":"StonfiProvideLiquidity","optional":false}}]},
     {"name":"JettonData","header":null,"fields":[{"name":"total_supply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"wallet_code","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"JettonWalletData","header":null,"fields":[{"name":"balance","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"master","type":{"kind":"simple","type":"address","optional":false}},{"name":"code","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"TokenTransfer","header":260734629,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"response_destination","type":{"kind":"simple","type":"address","optional":true}},{"name":"custom_payload","type":{"kind":"simple","type":"cell","optional":true}},{"name":"forward_ton_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"forward_payload","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
@@ -1393,11 +1682,14 @@ const SampleJetton_types: ABIType[] = [
     {"name":"TokenUpdateContent","header":2937889386,"fields":[{"name":"content","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"ProvideWalletAddress","header":745978227,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"owner_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"include_address","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"TakeWalletAddress","header":3513996288,"fields":[{"name":"query_id","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"wallet_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner_address","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+    {"name":"ChangeOwner","header":2174598809,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ContractInformation","header":null,"fields":[{"name":"fee","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"testAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"hasminted","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"CreateNewPoolConfig","header":null,"fields":[{"name":"swapRouterAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"proxyTon","type":{"kind":"simple","type":"address","optional":false}},{"name":"tonValueAddMeme","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"tonValueAddPton","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"routerPtonWallet","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"Mint","header":4235234258,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"CreateNewJetton","header":183966057,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"max_supply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"rate","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"CreateNewJettonMint","header":1037115371,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"receiver","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"CreateNewJetton","header":1019513059,"fields":[{"name":"token_owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"max_supply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"rate","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"lanuch_rate","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"isLanuch","type":{"kind":"simple","type":"bool","optional":false}},{"name":"config","type":{"kind":"simple","type":"CreateNewPoolConfig","optional":false}}]},
     {"name":"SimpData","header":1349238557,"fields":[{"name":"total_supply","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"mintable","type":{"kind":"simple","type":"bool","optional":false}},{"name":"rate","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
-    {"name":"CreateNewJettonWithLanuch","header":3522866708,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"max_supply","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"rate","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
 ]
 
 const SampleJetton_getters: ABIGetter[] = [
@@ -1409,7 +1701,7 @@ const SampleJetton_getters: ABIGetter[] = [
 
 const SampleJetton_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"typed","type":"Mint"}},
-    {"receiver":"internal","message":{"kind":"text","text":"Mint: 100"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"CreateNewJettonMint"}},
     {"receiver":"internal","message":{"kind":"text","text":"Owner: MintClose"}},
     {"receiver":"internal","message":{"kind":"typed","type":"TokenUpdateContent"}},
     {"receiver":"internal","message":{"kind":"typed","type":"TokenBurnNotification"}},
@@ -1419,12 +1711,12 @@ const SampleJetton_receivers: ABIReceiver[] = [
 
 export class SampleJetton implements Contract {
     
-    static async init(owner: Address, content: Cell, max_supply: bigint, rate: bigint) {
-        return await SampleJetton_init(owner, content, max_supply, rate);
+    static async init(owner: Address, content: Cell, max_supply: bigint, rate: bigint, creator_contract: Address) {
+        return await SampleJetton_init(owner, content, max_supply, rate, creator_contract);
     }
     
-    static async fromInit(owner: Address, content: Cell, max_supply: bigint, rate: bigint) {
-        const init = await SampleJetton_init(owner, content, max_supply, rate);
+    static async fromInit(owner: Address, content: Cell, max_supply: bigint, rate: bigint, creator_contract: Address) {
+        const init = await SampleJetton_init(owner, content, max_supply, rate, creator_contract);
         const address = contractAddress(0, init);
         return new SampleJetton(address, init);
     }
@@ -1447,14 +1739,14 @@ export class SampleJetton implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Mint | 'Mint: 100' | 'Owner: MintClose' | TokenUpdateContent | TokenBurnNotification | ProvideWalletAddress | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Mint | CreateNewJettonMint | 'Owner: MintClose' | TokenUpdateContent | TokenBurnNotification | ProvideWalletAddress | Deploy) {
         
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Mint') {
             body = beginCell().store(storeMint(message)).endCell();
         }
-        if (message === 'Mint: 100') {
-            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'CreateNewJettonMint') {
+            body = beginCell().store(storeCreateNewJettonMint(message)).endCell();
         }
         if (message === 'Owner: MintClose') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();

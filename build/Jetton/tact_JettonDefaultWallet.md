@@ -101,7 +101,6 @@ Total Get Methods: 1
 137: Masterchain support is not enabled for this contract
 4429: Invalid sender
 16059: Invalid value
-18668: Can't Mint Anymore
 23951: Insufficient gas
 42708: Invalid sender!
 43422: Invalid value - Burn

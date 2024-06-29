@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: LanuchJetton
-BOC Size: 1431 bytes
+BOC Size: 2470 bytes
 
 # Types
-Total Types: 24
+Total Types: 28
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -29,13 +29,17 @@ Signature: `DeployOk{queryId:uint64}`
 TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
-## ChangeOwner
-TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`
-Signature: `ChangeOwner{queryId:uint64,newOwner:address}`
+## PoolStorage
+TLB: `pool_storage#f0502d4d router_address:address lp_fee:uint8 protocol_fee:uint8 ref_fee:uint8 token0_address:address token1_address:address total_supply_lp:coins collected_token0_protocol_fee:coins collected_token1_protocol_fee:coins protocol_fee_address:address reserve0:coins reserve1:coins jetton_lp_wallet_code:^cell lp_account_code:^cell = PoolStorage`
+Signature: `PoolStorage{router_address:address,lp_fee:uint8,protocol_fee:uint8,ref_fee:uint8,token0_address:address,token1_address:address,total_supply_lp:coins,collected_token0_protocol_fee:coins,collected_token1_protocol_fee:coins,protocol_fee_address:address,reserve0:coins,reserve1:coins,jetton_lp_wallet_code:^cell,lp_account_code:^cell}`
 
-## ChangeOwnerOk
-TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
-Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
+## StonfiProvideLiquidity
+TLB: `stonfi_provide_liquidity#fcf9e58f token_wallet:address min_lp_out:coins = StonfiProvideLiquidity`
+Signature: `StonfiProvideLiquidity{token_wallet:address,min_lp_out:coins}`
+
+## ProvideLiquidity
+TLB: `provide_liquidity#7362d09c jettonAmount:coins fromAddress:address providerLiquidityBody:StonfiProvideLiquidity{token_wallet:address,min_lp_out:coins} = ProvideLiquidity`
+Signature: `ProvideLiquidity{jettonAmount:coins,fromAddress:address,providerLiquidityBody:StonfiProvideLiquidity{token_wallet:address,min_lp_out:coins}}`
 
 ## JettonData
 TLB: `_ total_supply:int257 mintable:bool owner:address content:^cell wallet_code:^cell = JettonData`
@@ -81,25 +85,37 @@ Signature: `ProvideWalletAddress{query_id:uint64,owner_address:address,include_a
 TLB: `take_wallet_address#d1735400 query_id:uint64 wallet_address:address owner_address:remainder<slice> = TakeWalletAddress`
 Signature: `TakeWalletAddress{query_id:uint64,wallet_address:address,owner_address:remainder<slice>}`
 
+## ChangeOwner
+TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`
+Signature: `ChangeOwner{queryId:uint64,newOwner:address}`
+
+## ChangeOwnerOk
+TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
+Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
+
 ## ContractInformation
 TLB: `_ fee:int257 owner:address testAddress:address hasminted:bool = ContractInformation`
 Signature: `ContractInformation{fee:int257,owner:address,testAddress:address,hasminted:bool}`
+
+## CreateNewPoolConfig
+TLB: `_ swapRouterAddress:address proxyTon:address tonValueAddMeme:coins tonValueAddPton:coins routerPtonWallet:address = CreateNewPoolConfig`
+Signature: `CreateNewPoolConfig{swapRouterAddress:address,proxyTon:address,tonValueAddMeme:coins,tonValueAddPton:coins,routerPtonWallet:address}`
 
 ## Mint
 TLB: `mint#fc708bd2 amount:int257 receiver:address = Mint`
 Signature: `Mint{amount:int257,receiver:address}`
 
+## CreateNewJettonMint
+TLB: `create_new_jetton_mint#3dd11feb amount:int257 receiver:address = CreateNewJettonMint`
+Signature: `CreateNewJettonMint{amount:int257,receiver:address}`
+
 ## CreateNewJetton
-TLB: `create_new_jetton#0af71969 owner:address content:^cell max_supply:int257 rate:int257 = CreateNewJetton`
-Signature: `CreateNewJetton{owner:address,content:^cell,max_supply:int257,rate:int257}`
+TLB: `create_new_jetton#3cc488e3 token_owner:address content:^cell max_supply:int257 rate:int257 lanuch_rate:int257 isLanuch:bool config:CreateNewPoolConfig{swapRouterAddress:address,proxyTon:address,tonValueAddMeme:coins,tonValueAddPton:coins,routerPtonWallet:address} = CreateNewJetton`
+Signature: `CreateNewJetton{token_owner:address,content:^cell,max_supply:int257,rate:int257,lanuch_rate:int257,isLanuch:bool,config:CreateNewPoolConfig{swapRouterAddress:address,proxyTon:address,tonValueAddMeme:coins,tonValueAddPton:coins,routerPtonWallet:address}}`
 
 ## SimpData
 TLB: `simp_data#506bbf1d total_supply:coins owner:address content:^cell mintable:bool rate:int257 = SimpData`
 Signature: `SimpData{total_supply:coins,owner:address,content:^cell,mintable:bool,rate:int257}`
-
-## CreateNewJettonWithLanuch
-TLB: `create_new_jetton_with_lanuch#d1faae14 owner:address content:^cell max_supply:int257 rate:int257 = CreateNewJettonWithLanuch`
-Signature: `CreateNewJettonWithLanuch{owner:address,content:^cell,max_supply:int257,rate:int257}`
 
 # Get Methods
 Total Get Methods: 1
@@ -136,9 +152,10 @@ Total Get Methods: 1
 12241: Max supply exceeded
 14534: Not owner
 16059: Invalid value
-18668: Can't Mint Anymore
 23951: Insufficient gas
+29786: supply rate has wrong
 42708: Invalid sender!
 43422: Invalid value - Burn
+52348: The CreateNewJettonMint only call once itme
 62972: Invalid balance
 63257: your fee can't afford it

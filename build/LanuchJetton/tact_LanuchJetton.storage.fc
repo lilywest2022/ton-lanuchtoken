@@ -18,6 +18,14 @@
     return (bounce, to, value, mode, body, code, data);
 }
 
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_bounce_value_mode_body_code_data(slice to, int bounce, int value, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_bounce_value_mode_body(slice to, int bounce, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_body(slice to, int value, int mode, cell body) inline {
     return (true, to, value, mode, body, null(), null());
 }
@@ -64,6 +72,55 @@ cell $DeployOk$_store_cell((int) v) inline {
 }
 
 ;;
+;; Type: StonfiProvideLiquidity
+;; Header: 0xfcf9e58f
+;; TLB: stonfi_provide_liquidity#fcf9e58f token_wallet:address min_lp_out:coins = StonfiProvideLiquidity
+;;
+
+builder $StonfiProvideLiquidity$_store(builder build_0, (slice, int) v) inline {
+    var (v'token_wallet, v'min_lp_out) = v;
+    build_0 = store_uint(build_0, 4244235663, 32);
+    build_0 = __tact_store_address(build_0, v'token_wallet);
+    build_0 = build_0.store_coins(v'min_lp_out);
+    return build_0;
+}
+
+cell $StonfiProvideLiquidity$_store_cell((slice, int) v) inline {
+    return $StonfiProvideLiquidity$_store(begin_cell(), v).end_cell();
+}
+
+((slice, int)) $StonfiProvideLiquidity$_constructor_token_wallet_min_lp_out(slice token_wallet, int min_lp_out) inline {
+    return (token_wallet, min_lp_out);
+}
+
+;;
+;; Type: TokenTransfer
+;; Header: 0x0f8a7ea5
+;; TLB: token_transfer#0f8a7ea5 query_id:uint64 amount:coins sender:address response_destination:Maybe address custom_payload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer
+;;
+
+builder $TokenTransfer$_store(builder build_0, (int, int, slice, slice, cell, int, slice) v) inline_ref {
+    var (v'query_id, v'amount, v'sender, v'response_destination, v'custom_payload, v'forward_ton_amount, v'forward_payload) = v;
+    build_0 = store_uint(build_0, 260734629, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_coins(v'amount);
+    build_0 = __tact_store_address(build_0, v'sender);
+    build_0 = __tact_store_address_opt(build_0, v'response_destination);
+    build_0 = ~ null?(v'custom_payload) ? build_0.store_int(true, 1).store_ref(v'custom_payload) : build_0.store_int(false, 1);
+    build_0 = build_0.store_coins(v'forward_ton_amount);
+    build_0 = build_0.store_slice(v'forward_payload);
+    return build_0;
+}
+
+cell $TokenTransfer$_store_cell((int, int, slice, slice, cell, int, slice) v) inline {
+    return $TokenTransfer$_store(begin_cell(), v).end_cell();
+}
+
+((int, int, slice, slice, cell, int, slice)) $TokenTransfer$_constructor_query_id_amount_sender_response_destination_custom_payload_forward_ton_amount_forward_payload(int query_id, int amount, slice sender, slice response_destination, cell custom_payload, int forward_ton_amount, slice forward_payload) inline {
+    return (query_id, amount, sender, response_destination, custom_payload, forward_ton_amount, forward_payload);
+}
+
+;;
 ;; Type: ContractInformation
 ;; TLB: _ fee:int257 owner:address testAddress:address hasminted:bool = ContractInformation
 ;;
@@ -75,6 +132,21 @@ cell $DeployOk$_store_cell((int) v) inline {
 
 ((int, slice, slice, int)) $ContractInformation$_constructor_fee_owner_testAddress_hasminted(int fee, slice owner, slice testAddress, int hasminted) inline {
     return (fee, owner, testAddress, hasminted);
+}
+
+;;
+;; Type: CreateNewPoolConfig
+;; TLB: _ swapRouterAddress:address proxyTon:address tonValueAddMeme:coins tonValueAddPton:coins routerPtonWallet:address = CreateNewPoolConfig
+;;
+
+(slice, ((slice, slice, int, int, slice))) $CreateNewPoolConfig$_load(slice sc_0) inline {
+    var v'swapRouterAddress = sc_0~__tact_load_address();
+    var v'proxyTon = sc_0~__tact_load_address();
+    var v'tonValueAddMeme = sc_0~load_coins();
+    var v'tonValueAddPton = sc_0~load_coins();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'routerPtonWallet = sc_1~__tact_load_address();
+    return (sc_0, (v'swapRouterAddress, v'proxyTon, v'tonValueAddMeme, v'tonValueAddPton, v'routerPtonWallet));
 }
 
 ;;
@@ -100,53 +172,113 @@ cell $Mint$_store_cell((int, slice) v) inline {
 }
 
 ;;
-;; Type: CreateNewJetton
-;; Header: 0x0af71969
-;; TLB: create_new_jetton#0af71969 owner:address content:^cell max_supply:int257 rate:int257 = CreateNewJetton
+;; Type: CreateNewJettonMint
+;; Header: 0x3dd11feb
+;; TLB: create_new_jetton_mint#3dd11feb amount:int257 receiver:address = CreateNewJettonMint
 ;;
 
-(slice, ((slice, cell, int, int))) $CreateNewJetton$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 183966057);
-    var v'owner = sc_0~__tact_load_address();
+builder $CreateNewJettonMint$_store(builder build_0, (int, slice) v) inline {
+    var (v'amount, v'receiver) = v;
+    build_0 = store_uint(build_0, 1037115371, 32);
+    build_0 = build_0.store_int(v'amount, 257);
+    build_0 = __tact_store_address(build_0, v'receiver);
+    return build_0;
+}
+
+cell $CreateNewJettonMint$_store_cell((int, slice) v) inline {
+    return $CreateNewJettonMint$_store(begin_cell(), v).end_cell();
+}
+
+((int, slice)) $CreateNewJettonMint$_constructor_amount_receiver(int amount, slice receiver) inline {
+    return (amount, receiver);
+}
+
+;;
+;; Type: CreateNewJetton
+;; Header: 0x3cc488e3
+;; TLB: create_new_jetton#3cc488e3 token_owner:address content:^cell max_supply:int257 rate:int257 lanuch_rate:int257 isLanuch:bool config:CreateNewPoolConfig{swapRouterAddress:address,proxyTon:address,tonValueAddMeme:coins,tonValueAddPton:coins,routerPtonWallet:address} = CreateNewJetton
+;;
+
+(slice, ((slice, cell, int, int, int, int, (slice, slice, int, int, slice)))) $CreateNewJetton$_load(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 1019513059);
+    var v'token_owner = sc_0~__tact_load_address();
     var v'content = sc_0~load_ref();
     var v'max_supply = sc_0~load_int(257);
     var v'rate = sc_0~load_int(257);
-    return (sc_0, (v'owner, v'content, v'max_supply, v'rate));
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'lanuch_rate = sc_1~load_int(257);
+    var v'isLanuch = sc_1~load_int(1);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'config = sc_2~$CreateNewPoolConfig$_load();
+    return (sc_0, (v'token_owner, v'content, v'max_supply, v'rate, v'lanuch_rate, v'isLanuch, v'config));
 }
 
-(slice, (tuple)) $CreateNewJetton$_load_bounced(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 183966057);
-    return (sc_0, null());
+;;
+;; Type: JettonDefaultWallet
+;;
+
+builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'owner, v'master) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = __tact_store_address(build_0, v'master);
+    return build_0;
+}
+
+(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $owner, slice $master) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell mine = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $JettonDefaultWallet$init$_store(b, ($owner, $master));
+    return (mine, b.end_cell());
 }
 
 ;;
 ;; Type: LanuchJetton
 ;;
 
-builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline {
-    var (v'owner, v'fee, v'testAddress, v'hasminted) = v;
+builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int, int, slice, int) v) inline {
+    var (v'owner, v'fee, v'testAddress, v'hasminted, v'isLanuch, v'lanuchJettonAddress, v'this_balance) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_int(v'fee, 257);
     build_0 = __tact_store_address(build_0, v'testAddress);
     build_0 = build_0.store_int(v'hasminted, 1);
+    build_0 = build_0.store_int(v'isLanuch, 1);
+    var build_1 = begin_cell();
+    build_1 = __tact_store_address(build_1, v'lanuchJettonAddress);
+    build_1 = build_1.store_int(v'this_balance, 257);
+    build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((slice, int, slice, int))) $LanuchJetton$_load(slice sc_0) inline {
+(slice, ((slice, int, slice, int, int, slice, int))) $LanuchJetton$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'fee = sc_0~load_int(257);
     var v'testAddress = sc_0~__tact_load_address();
     var v'hasminted = sc_0~load_int(1);
-    return (sc_0, (v'owner, v'fee, v'testAddress, v'hasminted));
+    var v'isLanuch = sc_0~load_int(1);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'lanuchJettonAddress = sc_1~__tact_load_address();
+    var v'this_balance = sc_1~load_int(257);
+    return (sc_0, (v'owner, v'fee, v'testAddress, v'hasminted, v'isLanuch, v'lanuchJettonAddress, v'this_balance));
 }
 
-(slice, ((slice, int))) $LanuchJetton$init$_load(slice sc_0) inline {
+(slice, ((slice, int, int))) $LanuchJetton$init$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'fee = sc_0~load_int(257);
-    return (sc_0, (v'owner, v'fee));
+    var v'isLanuch = sc_0~load_int(1);
+    return (sc_0, (v'owner, v'fee, v'isLanuch));
 }
 
-(slice, int, slice, int) $LanuchJetton$_contract_load() impure inline_ref {
+(slice, int, slice, int, int, slice, int) $LanuchJetton$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -155,13 +287,13 @@ builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner, int fee) = $sc~$LanuchJetton$init$_load();
+        (slice owner, int fee, int isLanuch) = $sc~$LanuchJetton$init$_load();
         $sc.end_parse();
-        return $LanuchJetton$_contract_init(owner, fee);
+        return $LanuchJetton$_contract_init(owner, fee, isLanuch);
     }
 }
 
-() $LanuchJetton$_contract_store((slice, int, slice, int) v) impure inline {
+() $LanuchJetton$_contract_store((slice, int, slice, int, int, slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
@@ -173,16 +305,19 @@ builder $LanuchJetton$_store(builder build_0, (slice, int, slice, int) v) inline
 ;; Type: SampleJetton
 ;;
 
-builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int) v) inline {
-    var (v'owner, v'content, v'max_supply, v'rate) = v;
+builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int, slice) v) inline {
+    var (v'owner, v'content, v'max_supply, v'rate, v'creator_contract) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_ref(v'content);
     build_0 = build_0.store_int(v'max_supply, 257);
     build_0 = build_0.store_int(v'rate, 257);
+    var build_1 = begin_cell();
+    build_1 = __tact_store_address(build_1, v'creator_contract);
+    build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content, int $max_supply, int $rate) inline_ref {
+(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content, int $max_supply, int $rate, slice $creator_contract) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -199,6 +334,6 @@ builder $SampleJetton$init$_store(builder build_0, (slice, cell, int, int) v) in
     builder b = begin_cell();
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
-    b = $SampleJetton$init$_store(b, ($owner, $content, $max_supply, $rate));
+    b = $SampleJetton$init$_store(b, ($owner, $content, $max_supply, $rate, $creator_contract));
     return (mine, b.end_cell());
 }

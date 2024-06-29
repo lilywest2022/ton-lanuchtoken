@@ -217,6 +217,19 @@ cell $TakeWalletAddress$_store_cell((int, slice, slice) v) inline {
 }
 
 ;;
+;; Type: CreateNewJettonMint
+;; Header: 0x3dd11feb
+;; TLB: create_new_jetton_mint#3dd11feb amount:int257 receiver:address = CreateNewJettonMint
+;;
+
+(slice, ((int, slice))) $CreateNewJettonMint$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1037115371);
+    var v'amount = sc_0~load_int(257);
+    var v'receiver = sc_0~__tact_load_address();
+    return (sc_0, (v'amount, v'receiver));
+}
+
+;;
 ;; Type: SimpData
 ;; Header: 0x506bbf1d
 ;; TLB: simp_data#506bbf1d total_supply:coins owner:address content:^cell mintable:bool rate:int257 = SimpData
@@ -263,36 +276,45 @@ builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inli
 ;; Type: SampleJetton
 ;;
 
-builder $SampleJetton$_store(builder build_0, (int, slice, cell, int, int, int) v) inline {
-    var (v'total_supply, v'owner, v'content, v'mintable, v'rate, v'max_supply) = v;
+builder $SampleJetton$_store(builder build_0, (int, slice, cell, int, int, int, int, slice) v) inline {
+    var (v'total_supply, v'owner, v'content, v'mintable, v'rate, v'max_supply, v'lock, v'creator_contract) = v;
     build_0 = build_0.store_coins(v'total_supply);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_ref(v'content);
     build_0 = build_0.store_int(v'mintable, 1);
     build_0 = build_0.store_int(v'rate, 257);
     build_0 = build_0.store_coins(v'max_supply);
+    build_0 = build_0.store_int(v'lock, 1);
+    var build_1 = begin_cell();
+    build_1 = __tact_store_address(build_1, v'creator_contract);
+    build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((int, slice, cell, int, int, int))) $SampleJetton$_load(slice sc_0) inline {
+(slice, ((int, slice, cell, int, int, int, int, slice))) $SampleJetton$_load(slice sc_0) inline {
     var v'total_supply = sc_0~load_coins();
     var v'owner = sc_0~__tact_load_address();
     var v'content = sc_0~load_ref();
     var v'mintable = sc_0~load_int(1);
     var v'rate = sc_0~load_int(257);
     var v'max_supply = sc_0~load_coins();
-    return (sc_0, (v'total_supply, v'owner, v'content, v'mintable, v'rate, v'max_supply));
+    var v'lock = sc_0~load_int(1);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'creator_contract = sc_1~__tact_load_address();
+    return (sc_0, (v'total_supply, v'owner, v'content, v'mintable, v'rate, v'max_supply, v'lock, v'creator_contract));
 }
 
-(slice, ((slice, cell, int, int))) $SampleJetton$init$_load(slice sc_0) inline {
+(slice, ((slice, cell, int, int, slice))) $SampleJetton$init$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'content = sc_0~load_ref();
     var v'max_supply = sc_0~load_int(257);
     var v'rate = sc_0~load_int(257);
-    return (sc_0, (v'owner, v'content, v'max_supply, v'rate));
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'creator_contract = sc_1~__tact_load_address();
+    return (sc_0, (v'owner, v'content, v'max_supply, v'rate, v'creator_contract));
 }
 
-(int, slice, cell, int, int, int) $SampleJetton$_contract_load() impure inline_ref {
+(int, slice, cell, int, int, int, int, slice) $SampleJetton$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -301,13 +323,13 @@ builder $SampleJetton$_store(builder build_0, (int, slice, cell, int, int, int) 
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner, cell content, int max_supply, int rate) = $sc~$SampleJetton$init$_load();
+        (slice owner, cell content, int max_supply, int rate, slice creator_contract) = $sc~$SampleJetton$init$_load();
         $sc.end_parse();
-        return $SampleJetton$_contract_init(owner, content, max_supply, rate);
+        return $SampleJetton$_contract_init(owner, content, max_supply, rate, creator_contract);
     }
 }
 
-() $SampleJetton$_contract_store((int, slice, cell, int, int, int) v) impure inline {
+() $SampleJetton$_contract_store((int, slice, cell, int, int, int, int, slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);

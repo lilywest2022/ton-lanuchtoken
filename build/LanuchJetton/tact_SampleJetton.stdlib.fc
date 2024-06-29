@@ -149,8 +149,8 @@ slice $Cell$_fun_asSlice(cell $self) impure inline {
     return begin_parse($self);
 }
 
-((int, slice, cell, int, int, int), ()) $SampleJetton$_fun_forward((int, slice, cell, int, int, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
-    var (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply)) = $self;
+((int, slice, cell, int, int, int, int, slice), ()) $SampleJetton$_fun_forward((int, slice, cell, int, int, int, int, slice) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
+    var (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract)) = $self;
     var ($init) = $init;
     cell $code = null();
     cell $data = null();
@@ -166,15 +166,15 @@ slice $Cell$_fun_asSlice(cell $self) impure inline {
         if (($balanceBeforeMessage < 0)) {
             raw_reserve(0, 0);
             $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (128 | 2), $body, $code, $data));
-            return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply), ());
+            return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract), ());
         }
     }
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (64 | 2), $body, $code, $data));
-    return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply), ());
+    return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract), ());
 }
 
-((int, slice, cell, int, int, int), ()) $SampleJetton$_fun_notify((int, slice, cell, int, int, int) $self, cell $body) impure inline {
-    var (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply)) = $self;
-    ($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply)~$SampleJetton$_fun_forward(__tact_context_get_sender(), $body, false, null());
-    return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply), ());
+((int, slice, cell, int, int, int, int, slice), ()) $SampleJetton$_fun_notify((int, slice, cell, int, int, int, int, slice) $self, cell $body) impure inline {
+    var (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract)) = $self;
+    ($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract)~$SampleJetton$_fun_forward(__tact_context_get_sender(), $body, false, null());
+    return (($self'total_supply, $self'owner, $self'content, $self'mintable, $self'rate, $self'max_supply, $self'lock, $self'creator_contract), ());
 }
